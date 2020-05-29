@@ -1,5 +1,6 @@
-package com.conferences.model;
+package com.conferences.domain;
 
+import com.conferences.model.UserConferenceRole;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 

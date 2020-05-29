@@ -1,6 +1,6 @@
-package com.conferences.repositories;
+package com.conferences.repository;
 
-import com.conferences.model.Conference;
+import com.conferences.domain.Conference;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ConferenceRepository
