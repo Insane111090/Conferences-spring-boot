@@ -1,7 +1,7 @@
 package com.conferences.domain;
 
 import com.conferences.model.UserConferenceRole;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -28,4 +28,14 @@ public @Data class UserConference {
     @Column(name = "ROLE", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserConferenceRole userConferenceRole;
+    
+    @Override
+    public String toString() {
+        return "UserConference{" +
+               "userConferenceID=" + userConferenceID +
+               ", user=" + user +
+               ", conference=" + conference +
+               ", userConferenceRole=" + userConferenceRole +
+               '}';
+    }
 }

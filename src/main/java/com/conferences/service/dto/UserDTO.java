@@ -7,7 +7,6 @@ import com.conferences.model.EducationStatus;
 import com.conferences.model.EducationType;
 import com.conferences.model.Gender;
 import com.conferences.model.UserRole;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -62,7 +61,9 @@ public @Data class UserDTO {
     
     private UserRole userRole;
     
-    private Set<Conference> userConferences;
+    //private Set<Conference> userConferences;
+    
+    private Set<ConferenceDTO> userConferencesDTO;
     
     public UserDTO(User user) {
         this.id = user.getUserId();
@@ -81,9 +82,12 @@ public @Data class UserDTO {
         this.educationStatus = user.getEducationStatus();
         this.graduatedWhen = user.getGraduationYear();
         this.userRole = user.getUserRole();
-        this.userConferences = user.getUserConferences().stream()
+        /*this.userConferences = user.getUserConferences().stream()
               .map(UserConference::getConference)
-              .collect(Collectors.toSet());
+              .collect(Collectors.toSet());*/
+        this.userConferencesDTO = user.getUserConferences().stream()
+              .map(UserConference::getConference)
+              .map(ConferenceDTO::new).collect(Collectors.toSet());
     }
     
     @Override
@@ -104,7 +108,7 @@ public @Data class UserDTO {
                ", educationType=" + educationType +
                ", educationStatus=" + educationStatus +
                ", userRole=" + userRole +
-               ", userConferences=" + userConferences +
+              // ", userConferences=" + userConferences +
                '}';
     }
 }

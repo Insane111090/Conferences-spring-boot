@@ -4,9 +4,9 @@ import com.conferences.model.EducationStatus;
 import com.conferences.model.EducationType;
 import com.conferences.model.Gender;
 import com.conferences.model.UserRole;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "users")
 public @Data class User
       implements Serializable {

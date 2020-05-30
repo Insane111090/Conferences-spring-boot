@@ -1,20 +1,24 @@
 package com.conferences.domain;
 
-import com.conferences.domain.UserConference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "conferences")
-public @Data class Conference {
+public @Data class Conference
+      implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CONFERENCE_ID", nullable = false)
-    private long conferenceId;
+    private Long conferenceId;
     
     @Column(name = "TITLE", nullable = false)
     private String title;
@@ -53,5 +57,35 @@ public @Data class Conference {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "conference", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "conferenceParent")
     private Set<UserConference> userConferences;
+    
+    public Conference(final String title, final String shortDescription, final String location,
+                      final String owner, final String contacts, final Date startDate, final Date endDate,
+                      final Date registrationStartDate, final Date registrationEndDate) {
+        this.title = title;
+        this.shortDescription = shortDescription;
+        this.conferenceLocation = location;
+        this.organizer = owner;
+        this.contacts = contacts;
+        this.conferenceStartDate = startDate;
+        this.conferenceEndDate = endDate;
+        this.conferenceRegistrationStartDate = registrationStartDate;
+        this.conferenceRegistrationEndDate = registrationEndDate;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Conference)) {
+            return false;
+        }
+        return conferenceId != null && conferenceId.equals(((Conference) o).conferenceId);
+    }
+    
+    @Override
+    public int hashCode() {
+        return 31;
+    }
     
 }
