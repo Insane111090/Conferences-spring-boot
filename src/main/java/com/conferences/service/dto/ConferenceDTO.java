@@ -1,19 +1,20 @@
 package com.conferences.service.dto;
 
 import com.conferences.domain.Conference;
-import com.conferences.domain.UserConference;
 import com.conferences.model.UserConferenceRole;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
  * A DTO representing a conference with it's users
  */
 @NoArgsConstructor
+@Slf4j
 public @Data class ConferenceDTO {
     private Long id;
     
@@ -41,7 +42,7 @@ public @Data class ConferenceDTO {
     
     private Long userConferenceRelationId;
     
-    public ConferenceDTO(Conference conference){
+    public ConferenceDTO(Conference conference) {
         this.id = conference.getConferenceId();
         this.title = conference.getTitle();
         this.shortDescription = conference.getShortDescription();
@@ -53,8 +54,11 @@ public @Data class ConferenceDTO {
         this.endDate = conference.getConferenceEndDate();
         this.registrationEndDate = conference.getConferenceRegistrationEndDate();
         this.registrationStartDate = conference.getConferenceRegistrationStartDate();
-        this.userConferenceRole = conference.getUserConferences().iterator().next().getUserConferenceRole();
-        this.userConferenceRelationId = conference.getUserConferences().iterator().next().getUserConferenceID();
+        if (conference.getUserConferences().size() > 0){
+            this.userConferenceRole = conference.getUserConferences().iterator().next().getUserConferenceRole();
+            this.userConferenceRelationId = conference.getUserConferences().iterator().next().getUserConferenceID();
+        }
+        
     }
     
     @Override
