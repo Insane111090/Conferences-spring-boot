@@ -1,10 +1,14 @@
 package com.conferences.service.dto;
 
 import com.conferences.domain.Conference;
+import com.conferences.domain.UserConference;
+import com.conferences.model.UserConferenceRole;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A DTO representing a conference with it's users
@@ -33,6 +37,10 @@ public @Data class ConferenceDTO {
     
     private Date registrationEndDate;
     
+    private UserConferenceRole userConferenceRole;
+    
+    private Long userConferenceRelationId;
+    
     public ConferenceDTO(Conference conference){
         this.id = conference.getConferenceId();
         this.title = conference.getTitle();
@@ -45,6 +53,8 @@ public @Data class ConferenceDTO {
         this.endDate = conference.getConferenceEndDate();
         this.registrationEndDate = conference.getConferenceRegistrationEndDate();
         this.registrationStartDate = conference.getConferenceRegistrationStartDate();
+        this.userConferenceRole = conference.getUserConferences().iterator().next().getUserConferenceRole();
+        this.userConferenceRelationId = conference.getUserConferences().iterator().next().getUserConferenceID();
     }
     
     @Override

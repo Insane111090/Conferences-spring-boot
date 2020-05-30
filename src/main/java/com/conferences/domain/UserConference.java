@@ -3,10 +3,12 @@ package com.conferences.domain;
 import com.conferences.model.UserConferenceRole;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "USERS_CONFERENCES")
 public @Data class UserConference {
     
@@ -28,6 +30,12 @@ public @Data class UserConference {
     @Column(name = "ROLE", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserConferenceRole userConferenceRole;
+    
+    public UserConference(User user, Conference conference, UserConferenceRole userConferenceRole){
+        this.user = user;
+        this.conference = conference;
+        this.userConferenceRole = userConferenceRole;
+    }
     
     @Override
     public String toString() {

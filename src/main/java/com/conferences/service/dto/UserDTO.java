@@ -1,12 +1,8 @@
 package com.conferences.service.dto;
 
-import com.conferences.domain.Conference;
 import com.conferences.domain.User;
 import com.conferences.domain.UserConference;
-import com.conferences.model.EducationStatus;
-import com.conferences.model.EducationType;
-import com.conferences.model.Gender;
-import com.conferences.model.UserRole;
+import com.conferences.model.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -108,7 +104,7 @@ public @Data class UserDTO {
                ", educationType=" + educationType +
                ", educationStatus=" + educationStatus +
                ", userRole=" + userRole +
-              // ", userConferences=" + userConferences +
+               // ", userConferences=" + userConferences +
                '}';
     }
 }

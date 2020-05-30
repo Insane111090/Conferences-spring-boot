@@ -65,12 +65,7 @@ public class ConferenceService {
     }
     
     public void deleteConference(String id) {
-        conferenceRepository.findById(Long.parseLong(id)).ifPresent(conference -> {
-            conferenceRepository.delete(conference);
-            log.debug("Deleted Conference {}",
-                      conference
-                     );
-        });
+        conferenceRepository.findById(Long.parseLong(id)).ifPresent(conferenceRepository::delete);
     }
     
     @Transactional(readOnly = true)

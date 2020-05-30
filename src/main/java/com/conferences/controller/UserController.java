@@ -30,7 +30,8 @@ public class UserController {
     private HttpHeaders headers;
     
     @Autowired
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService,
+                          UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
     }
@@ -121,7 +122,7 @@ public class UserController {
     /**
      * {@code GET /user/authorise/{email},{password} : Authorise User by email + password.
      *
-     * @param email of the user.
+     * @param email    of the user.
      * @param password of the user.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body of the user.
      * @throws NoSuchUserException {@code 400 (Bad Request)} if User does not have conferences.

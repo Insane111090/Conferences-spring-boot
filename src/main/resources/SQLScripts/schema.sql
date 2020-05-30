@@ -47,7 +47,7 @@ CREATE TABLE USERS_CONFERENCES
     ROLE               VARCHAR(20) NOT NULL
 );
 
-select
+select *
 FROM USERS;
 
 select *
@@ -55,12 +55,5 @@ FROM CONFERENCES;
 
 select *
 FROM USERS_CONFERENCES;
-
-INSERT INTO CONFERENCES
-VALUES (1, 'Test Conference', 'Short Description', 'Full Desc', 'St. Petersburg', 'Organizer', 'Contacts',
-        current_date, current_date + 1, current_date, current_date + 1);
-
-insert into USERS_CONFERENCES
-values (1, 19, 1, 'SPEAKER');
 
 
