@@ -207,7 +207,7 @@ public class ConferenceController {
                                                );
         }
         UserDTO user = new UserDTO(userService.findById(Long.parseLong(userId)));
-        
+        conference.setCreatedBy(user.getId());
         try {
             Conference createdConference = conferenceService.createConference(conference
                                                                              );

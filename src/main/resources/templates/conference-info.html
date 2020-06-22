@@ -101,7 +101,7 @@
         <textarea th:utext="${conference.fullDescription}" style="width: 30rem;border: none;"></textarea>
     </label>
     <form method="POST" enctype="multipart/form-data"
-          th:if="${userconf != null && userconf.userConferenceRole != null}"
+          th:if="${userconf != null && userconf.userConferenceRole != null && userconf.reportAccepted != 1}"
           th:action="@{/{userId}/conferences/{conferenceId}/uploadreport(userId=${user.id},conferenceId=${conference.id})}">
         File to upload: <input type="file" name="file">
         <input type="submit" value="Upload"> Upload
