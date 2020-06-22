@@ -1,5 +1,15 @@
 package com.conferences.model;
 
 public enum UserRole {
-    ADMIN, USER
+    ADMIN("Admin"), USER("User");
+    
+    private final String displayValue;
+    
+    UserRole(String displayValue) {
+        this.displayValue = displayValue;
+    }
+    
+    public String getDisplayValue() {
+        return displayValue;
+    }
 }

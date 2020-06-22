@@ -1,15 +1,19 @@
 package com.conferences.service;
 
 import com.conferences.domain.Conference;
+import com.conferences.domain.User;
 import com.conferences.repository.ConferenceRepository;
 import com.conferences.service.dto.ConferenceDTO;
+import com.conferences.service.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,7 +38,8 @@ public class ConferenceService {
                                                   conferenceDTO.getStartDate(),
                                                   conferenceDTO.getEndDate(),
                                                   conferenceDTO.getRegistrationStartDate(),
-                                                  conferenceDTO.getRegistrationEndDate()
+                                                  conferenceDTO.getRegistrationEndDate(),
+                                                  conferenceDTO.getCreatedBy()
         );
         newConference.setFullDescription(conferenceDTO.getFullDescription());
         conferenceRepository.save(newConference);
@@ -59,6 +64,7 @@ public class ConferenceService {
                   conference.setConferenceEndDate(conferenceDTO.getEndDate());
                   conference.setConferenceRegistrationStartDate(conferenceDTO.getRegistrationStartDate());
                   conference.setConferenceRegistrationEndDate(conferenceDTO.getRegistrationEndDate());
+                  conference.setCreatedBy(conferenceDTO.getCreatedBy());
                   return conference;
               })
               .map(ConferenceDTO::new);
@@ -69,8 +75,12 @@ public class ConferenceService {
     }
     
     @Transactional(readOnly = true)
-    public Page<ConferenceDTO> getAllExistingConferences(Pageable pageable) {
-        return conferenceRepository.findAll(pageable).map(ConferenceDTO::new);
+    public List<ConferenceDTO> getAllExistingConferences(int pageNum, int rowPerPage) {
+        Pageable pageable = PageRequest.of(pageNum - 1,
+                                           rowPerPage,
+                                           Sort.by("title").ascending()
+                                          );
+        return conferenceRepository.findAll(pageable).stream().map(ConferenceDTO::new).collect(Collectors.toList());
     }
     
     @Transactional(readOnly = true)
@@ -82,5 +92,20 @@ public class ConferenceService {
             throw new SearchResultIsEmptyException();
         }
         return searchResult;
+    }
+    
+    @Transactional(readOnly = true)
+    public List<ConferenceDTO> getUserCreatedConferences(final UserDTO user,
+                                                         int pageNum,
+                                                         int rowPerPage) {
+        Pageable pageable = PageRequest.of(pageNum - 1,
+                                           rowPerPage,
+                                           Sort.by("title").ascending()
+                                          );
+        return conferenceRepository.findByCreatedBy(user.getId()).stream().map(ConferenceDTO::new).collect(Collectors.toList());
+    }
+    
+    public Long count() {
+        return conferenceRepository.count();
     }
 }

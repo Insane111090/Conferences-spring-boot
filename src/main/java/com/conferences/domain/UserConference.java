@@ -31,6 +31,15 @@ public @Data class UserConference {
     @Enumerated(EnumType.STRING)
     private UserConferenceRole userConferenceRole;
     
+    @Column(name = "REPORT_FILE_PATH")
+    private String reportPath;
+    
+    @Column(name = "REVIEW_FILE_PATH")
+    private String reviewPath;
+    
+    @Column(name = "reportisok")
+    private Integer reportAccepted;
+    
     public UserConference(User user, Conference conference, UserConferenceRole userConferenceRole){
         this.user = user;
         this.conference = conference;

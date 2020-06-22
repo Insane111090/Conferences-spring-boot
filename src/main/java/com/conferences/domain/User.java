@@ -7,6 +7,7 @@ import com.conferences.model.UserRole;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -37,6 +38,7 @@ public @Data class User
     
     @Column(name = "DATE_OF_BIRTH", nullable = false)
     @Temporal(value = TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
     
     @Column(name = "GENDER", nullable = false)

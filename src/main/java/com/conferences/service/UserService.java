@@ -1,16 +1,21 @@
 package com.conferences.service;
 
 import com.conferences.domain.User;
+import com.conferences.model.UserRole;
 import com.conferences.repository.UserRepository;
 import com.conferences.service.dto.ConferenceDTO;
 import com.conferences.service.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,7 +28,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
     
-    public User createUser(UserDTO userDTO) {
+    public User createUser(UserDTO userDTO) throws EmailAlreadyUsedException {
         userRepository.findOneByEmailAndPasswordIgnoreCase(userDTO.getEmail().toLowerCase(),
                                                            userDTO.getPassword().toLowerCase()
                                                           ).ifPresent(existingUser -> {
@@ -48,7 +53,12 @@ public class UserService {
         newUser.setEducationStatus(userDTO.getEducationStatus());
         newUser.setUniversity(userDTO.getUniversity());
         newUser.setGraduationYear(userDTO.getGraduatedWhen());
-        newUser.setUserRole(userDTO.getUserRole());
+        if (userDTO.getEmail().toLowerCase().endsWith("@spbstu.ru")) {
+            newUser.setUserRole(UserRole.ADMIN);
+        }
+        else {
+            newUser.setUserRole(UserRole.USER);
+        }
         userRepository.save(newUser);
         return newUser;
     }
@@ -70,7 +80,13 @@ public class UserService {
     }
     
     @Transactional(readOnly = true)
-    public Set<? extends ConferenceDTO> getUserConferences(final String userId) {
+    public List<ConferenceDTO> getUserConferences(final String userId,
+                                                  int pageNum,
+                                                  int rowPerPage) {
+        Pageable pageable = PageRequest.of(pageNum - 1,
+                                           rowPerPage,
+                                           Sort.by("title").ascending()
+                                          );
         UserDTO userDTO = new UserDTO(findById(Long.parseLong(userId)));
         if (userDTO.getUserConferencesDTO().size() == 0) {
             throw new NoConferenceExistedForTheUserException();
@@ -103,6 +119,17 @@ public class UserService {
                   return user;
               })
               .map(UserDTO::new);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<UserDTO> getConferenceParticipants(final ConferenceDTO conferenceDTO) {
+        /*Participant participant = userRepository.findParticipant(conferenceDTO.getId());
+        log.debug(participant.getConfRole());*/
+        
+        return userRepository.findParticipants(conferenceDTO.getId())
+              .stream()
+              .map(UserDTO::new)
+              .collect(Collectors.toList());
     }
     
 }

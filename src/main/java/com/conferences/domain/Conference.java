@@ -54,13 +54,17 @@ public @Data class Conference
     @Temporal(value = TemporalType.DATE)
     private Date conferenceRegistrationEndDate;
     
+    @Column(name = "CREATED_BY", nullable = false)
+    private Long createdBy;
+    
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "conference", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "conferenceParent")
     private Set<UserConference> userConferences;
     
     public Conference(final String title, final String shortDescription, final String location,
                       final String owner, final String contacts, final Date startDate, final Date endDate,
-                      final Date registrationStartDate, final Date registrationEndDate) {
+                      final Date registrationStartDate, final Date registrationEndDate,
+                      final Long createdBy) {
         this.title = title;
         this.shortDescription = shortDescription;
         this.conferenceLocation = location;
@@ -70,6 +74,7 @@ public @Data class Conference
         this.conferenceEndDate = endDate;
         this.conferenceRegistrationStartDate = registrationStartDate;
         this.conferenceRegistrationEndDate = registrationEndDate;
+        this.createdBy = createdBy;
     }
     
     @Override
@@ -88,4 +93,22 @@ public @Data class Conference
         return 31;
     }
     
+    @Override
+    public String toString() {
+        return "Conference{" +
+               "conferenceId=" + conferenceId +
+               ", title='" + title + '\'' +
+               ", shortDescription='" + shortDescription + '\'' +
+               ", fullDescription='" + fullDescription + '\'' +
+               ", conferenceLocation='" + conferenceLocation + '\'' +
+               ", organizer='" + organizer + '\'' +
+               ", contacts='" + contacts + '\'' +
+               ", conferenceStartDate=" + conferenceStartDate +
+               ", conferenceEndDate=" + conferenceEndDate +
+               ", conferenceRegistrationStartDate=" + conferenceRegistrationStartDate +
+               ", conferenceRegistrationEndDate=" + conferenceRegistrationEndDate +
+               ", createdBy=" + createdBy +
+               ", userConferences=" + userConferences +
+               '}';
+    }
 }

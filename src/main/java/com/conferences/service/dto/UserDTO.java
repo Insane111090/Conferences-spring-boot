@@ -1,14 +1,19 @@
 package com.conferences.service.dto;
 
+import com.conferences.domain.Conference;
 import com.conferences.domain.User;
 import com.conferences.domain.UserConference;
 import com.conferences.model.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,6 +40,8 @@ public @Data class UserDTO {
     @Size(min = 5, max = 199)
     private String password;
     
+    @Temporal(value = TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
     
     private Gender gender;
@@ -57,9 +64,9 @@ public @Data class UserDTO {
     
     private UserRole userRole;
     
-    //private Set<Conference> userConferences;
+    private Set<Conference> userConferences;
     
-    private Set<ConferenceDTO> userConferencesDTO;
+    private List<ConferenceDTO> userConferencesDTO;
     
     public UserDTO(User user) {
         this.id = user.getUserId();
@@ -78,12 +85,12 @@ public @Data class UserDTO {
         this.educationStatus = user.getEducationStatus();
         this.graduatedWhen = user.getGraduationYear();
         this.userRole = user.getUserRole();
-        /*this.userConferences = user.getUserConferences().stream()
+        this.userConferences = user.getUserConferences().stream()
               .map(UserConference::getConference)
-              .collect(Collectors.toSet());*/
+              .collect(Collectors.toSet());
         this.userConferencesDTO = user.getUserConferences().stream()
               .map(UserConference::getConference)
-              .map(ConferenceDTO::new).collect(Collectors.toSet());
+              .map(ConferenceDTO::new).collect(Collectors.toList());
     }
     
     @Override

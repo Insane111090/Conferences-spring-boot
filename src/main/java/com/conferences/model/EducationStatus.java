@@ -1,5 +1,15 @@
 package com.conferences.model;
 
 public enum EducationStatus {
-    ENROLLE, STUDENT, GRADUATE
+    ENROLLEE("Enrollee"), STUDENT("Student"), GRADUATE("Graduate");
+    
+    private final String displayValue;
+    
+    EducationStatus(String displayValue) {
+        this.displayValue = displayValue;
+    }
+    
+    public String getDisplayValue() {
+        return displayValue;
+    }
 }

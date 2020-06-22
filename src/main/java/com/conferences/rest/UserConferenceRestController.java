@@ -1,4 +1,4 @@
-package com.conferences.controller;
+package com.conferences.rest;
 
 import com.conferences.service.ConferenceService;
 import com.conferences.service.UserConferenceService;
@@ -18,7 +18,7 @@ import java.net.URISyntaxException;
 @RestController
 @Slf4j
 @RequestMapping(value = "/userconference")
-public class UserConferenceController {
+public class UserConferenceRestController {
     private static final String APPLICATION_NAME = "ConferencesBackEnd Application";
     private final UserConferenceService userConferenceService;
     private final ConferenceService conferenceService;
@@ -26,9 +26,9 @@ public class UserConferenceController {
     private HttpHeaders headers;
     
     @Autowired
-    public UserConferenceController(UserConferenceService userConferenceService,
-                                    ConferenceService conferenceService,
-                                    UserService userService) {
+    public UserConferenceRestController(UserConferenceService userConferenceService,
+                                        ConferenceService conferenceService,
+                                        UserService userService) {
         this.userConferenceService = userConferenceService;
         this.conferenceService = conferenceService;
         this.userService = userService;

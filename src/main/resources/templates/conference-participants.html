@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.thymeleaf.org" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/layout}" lang="en">
+<head>
+    <title th:utext="${title}"></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" charset="UTF-8">
+    <link th:href="@{/css/core.css}" rel="stylesheet" media="screen"/>
+</head>
+<body>
+<div class="my-overflow" layout:fragment="content" style="padding-top: 6rem;" th:object="${user}">
+    <h1 th:utext="${'Participants of the ' + conference.title + ' conference'}"></h1><br/>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">ФИО</th>
+            <th scope="col">E-Mail</th>
+            <th scope="col">Роль</th>
+            <th scope="col">Организация</th>
+            <th scope="col">Доклад</th>
+            <th scope="col">Статус</th>
+            <th scope="col">Рецензия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="participant,iterState : ${participants}">
+            <th scope="row" th:utext="${iterState.index + 1}"></th>
+            <td th:utext="${participant.lastName + ' ' + participant.firstName + ' ' + participant.thirdName}"></td>
+            <td th:utext="${participant.email}"></td>
+            <td th:utext="${usersconf.get(iterState.index).userConferenceRole.getDisplayValue()}"></td>
+            <td th:utext="${participant.organisation}"></td>
+            <td>
+                <a th:utext="${usersconf.get(iterState.index).reportPath.substring(usersconf.get(iterState.index).reportPath.lastIndexOf('/')+1)}"
+                   th:href="@{/download?filePath={filePath}(filePath=${usersconf.get(iterState.index).reportPath})}"></a>
+
+                <form method="post"
+                      th:action="@{/{userId}/conferences/{conferenceId}/participants/{action}
+                      (userId=${participant.id},conferenceId=${conference.id},action='Approve')}"
+                      th:if="${usersconf.get(iterState.index).reportPath != null && usersconf.get(iterState.index).accepted == 0}">
+                    <button type="submit" class="btn btn-primary btn-sm">Approve</button>
+                </form>
+                <form method="post"
+                      th:action="@{/{userId}/conferences/{conferenceId}/participants/{action}
+                      (userId=${participant.id},conferenceId=${conference.id},action='Reject')}"
+                      th:if="${usersconf.get(iterState.index).reportPath != null && usersconf.get(iterState.index).accepted == 1}">
+                    <button type="submit" class="btn btn-warning btn-sm">Reject</button>
+                </form>
+            </td>
+            <td th:utext="${usersconf.get(iterState.index).accepted == 0 ? 'Declined' : 'Accepted'}">
+            </td>
+            <td th:if="${usersconf.get(iterState.index).reviewPath == null}">
+                <form method="POST" enctype="multipart/form-data"
+                      th:action="@{/{userId}/conferences/{conferenceId}/uploadreview(userId=${participant.id},conferenceId=${conference.id})}">
+                    <input type="file" name="file">
+                    <input type="submit" value="Upload"> Upload
+                </form>
+            </td>
+            <td th:if="${usersconf.get(iterState.index).reviewPath != null}">
+                <a th:utext="${usersconf.get(iterState.index).reviewPath.substring(usersconf.get(iterState.index).reviewPath.lastIndexOf('/')+1)}"
+                   th:href="@{/download?filePath={filePath}(filePath=${usersconf.get(iterState.index).reviewPath})}"></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div style="color: brown; padding-top: 1rem;" th:if="${errorMessage}" th:utext="${errorMessage}"/>
+</div>
+</body>
+</html>
