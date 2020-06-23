@@ -22,8 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -144,7 +142,7 @@ public class ConferenceController {
         Optional<UserConference> userConference = userConferenceService.getUserConferenceRelation(user,
                                                                                                   conference
                                                                                                  );
-        List<UserDTO> participants = userService.getConferenceParticipants(conference);
+        /*List<UserDTO> participants = userService.getConferenceParticipants(conference);*/
         model.addAttribute("title",
                            conferencesInfoTitle
                           );
@@ -157,8 +155,8 @@ public class ConferenceController {
         model.addAttribute("userconf",
                            userConference.orElseGet(UserConference::new)
                           );
-        model.addAttribute("participants",
-                           participants);
+        /*model.addAttribute("participants",
+                           participants);*/
         
         return "conference-info";
     }

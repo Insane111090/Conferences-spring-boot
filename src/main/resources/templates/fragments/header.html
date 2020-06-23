@@ -32,7 +32,7 @@
             </ul>
             <form class="form-inline my-2 my-lg-0"
                   th:action="@{/{userId}/allconferences/search/(userId=${user.id})}"
-                  method="get" id="myId">
+                  method="get" id="searchFormId">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search Conference" id="searchInput">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="searchButton">Search</button>
             </form>
@@ -49,7 +49,7 @@
             crossorigin="anonymous"></script>
     <script>
         $("#searchButton").click(function () {
-            $("#myId").attr("action", $("#myId").attr("action") + $("#searchInput").val())
+            $("#searchFormId").attr("action", $("#searchFormId").attr("action") + $("#searchInput").val())
         })
     </script>
 </div>
