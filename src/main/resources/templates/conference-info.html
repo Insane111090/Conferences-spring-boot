@@ -10,21 +10,28 @@
 <div class=my-overflow style="padding-top: 5rem; padding-left: 11rem;" layout:fragment="content">
     <a class="btn btn-info btn-sm active" role="button"
        aria-pressed="true" style="margin-left: 30rem;"
-       th:if="${user.id == conference.createdBy && user.userRole.getDisplayValue() == 'Admin'}"
+       th:if="${user.id == conference.createdBy && user.userRole.getDisplayValue() == T(com.conferences.model.UserRole).ADMIN.getDisplayValue()}"
        th:href="@{/{userId}/conferences/{conferenceId}/edit(userId=${user.id},conferenceId=${conference.id})}">
         Edit Conference Info
     </a>
     <form method="post"
-          th:if="${user.id == conference.createdBy && user.userRole.getDisplayValue() == 'Admin'}"
+          th:if="${user.id == conference.createdBy && user.userRole.getDisplayValue() == T(com.conferences.model.UserRole).ADMIN.getDisplayValue()}"
           th:action="@{/{userId}/conferences/{conferenceId}/delete(userId=${user.id}, conferenceId=${conference.id})}"
           style="margin-top: -31px; margin-left: 21rem;">
         <button type="submit" class="btn btn-primary btn-sm">Delete Conference</button>
     </form>
     <a class="btn btn-info btn-sm" role="button"
        aria-pressed="true" style="margin-left: 14.7rem;margin-top: -58px;"
-       th:if="${user.id == conference.createdBy && user.userRole.getDisplayValue() == 'Admin'}"
+       th:if="${user.id == conference.createdBy && user.userRole.getDisplayValue() == T(com.conferences.model.UserRole).ADMIN.getDisplayValue()}"
        th:href="@{/{userId}/conferences/{conferenceId}/participants(userId=${user.id},conferenceId=${conference.id})}">
         Participants
+    </a>
+    <a class="btn btn-success btn-sm" role="button"
+       aria-pressed="true" style="margin-left: 18.9rem;margin-top: -58px;"
+       th:if="${user.id == conference.createdBy && user.userRole.getDisplayValue() == T(com.conferences.model.UserRole).ADMIN.getDisplayValue() &&
+       participants.size() != 0}"
+       th:href="@{/exportFile?conferenceId={conferenceId}(conferenceId=${conference.id})}">
+        Export .csv
     </a>
     <h2 th:utext="${conference.title}"></h2><br/>
     <p th:utext="${conference.shortDescription}"></p>

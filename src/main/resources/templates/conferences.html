@@ -22,6 +22,7 @@
         Prev</a></span>
     <span th:if="${hasNext}"><a
             th:href="@{/{userId}/allconferences?page={next}(next=${next}, userId=${user.id})}">Next</a></span>
+    <div style="color: brown; padding-top: 1rem;" th:if="${errorMessage}" th:utext="${errorMessage}"/>
 </div>
 </body>
 </html>

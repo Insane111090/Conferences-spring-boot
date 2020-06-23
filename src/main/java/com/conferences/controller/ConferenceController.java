@@ -4,10 +4,7 @@ import com.conferences.domain.Conference;
 import com.conferences.domain.UserConference;
 import com.conferences.model.ReportStatus;
 import com.conferences.model.UserConferenceRole;
-import com.conferences.service.ConferenceService;
-import com.conferences.service.NoConferenceExistedForTheUserException;
-import com.conferences.service.UserConferenceService;
-import com.conferences.service.UserService;
+import com.conferences.service.*;
 import com.conferences.service.dto.ConferenceDTO;
 import com.conferences.service.dto.UserConferenceDTO;
 import com.conferences.service.dto.UserDTO;
@@ -25,6 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -109,6 +108,33 @@ public class ConferenceController {
         return "conferences";
     }
     
+    @GetMapping(value = "/{userId}/allconferences/search/{searchCriteria}")
+    public String searchConferences(Model model,
+                                    @PathVariable String userId,
+                                    @PathVariable String searchCriteria) {
+        UserDTO user = new UserDTO(userService.findById(Long.parseLong(userId)));
+        model.addAttribute("title",
+                           conferencesTitle
+                          );
+        model.addAttribute("user",
+                           user
+                          );
+        try {
+            List<ConferenceDTO> foundConferences = conferenceService.findConferencesByTitle(searchCriteria);
+            
+            
+            model.addAttribute("conferences",
+                               foundConferences
+                              );
+        }
+        catch (SearchResultIsEmptyException e) {
+            model.addAttribute("errorMessage",
+                               "No Conferences Found with criteria '" + searchCriteria + "'"
+                              );
+        }
+        return "conferences";
+    }
+    
     @GetMapping(value = "/{userId}/conferences/{conferenceId}/show")
     public String showConferenceInfo(Model model,
                                      @PathVariable String conferenceId,
@@ -118,6 +144,7 @@ public class ConferenceController {
         Optional<UserConference> userConference = userConferenceService.getUserConferenceRelation(user,
                                                                                                   conference
                                                                                                  );
+        List<UserDTO> participants = userService.getConferenceParticipants(conference);
         model.addAttribute("title",
                            conferencesInfoTitle
                           );
@@ -130,6 +157,8 @@ public class ConferenceController {
         model.addAttribute("userconf",
                            userConference.orElseGet(UserConference::new)
                           );
+        model.addAttribute("participants",
+                           participants);
         
         return "conference-info";
     }
@@ -146,7 +175,6 @@ public class ConferenceController {
                                                 );
         }
         else {
-            log.debug("ROLE IS: " + role);
             UserConferenceDTO userConferenceDTO = new UserConferenceDTO(userId,
                                                                         conferenceId,
                                                                         role.equals("SPEAKER") ?
@@ -570,6 +598,86 @@ public class ConferenceController {
         }
         outStream.flush();
         inStream.close();
+    }
+    
+    @GetMapping("/exportFile")
+    public void exportCSVFile(@RequestParam(value = "conferenceId") String conferenceId,
+                              HttpServletResponse response) throws IOException {
+        ConferenceDTO conferenceDTO = new ConferenceDTO(conferenceService.findById(Long.parseLong(conferenceId)));
+        List<UserDTO> participants = userService.getConferenceParticipants(conferenceDTO);
+        String directory = "/Users/andreigavrilov/Work/Projects/Diploma/Conferences/src/main/resources/files/exports/";
+        String fileName = "export_conference_" + conferenceDTO.getTitle() + ".csv";
+        MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext,
+                                                                     fileName
+                                                                    );
+        if (participants.size() != 0) {
+            Path path = Paths.get(directory);
+            if (!Files.exists(path)) {
+                
+                Files.createDirectory(path);
+            }
+            FileWriter fileWriter = new FileWriter(directory + fileName);
+            participants.forEach(userDTO -> {
+                StringBuilder row = new StringBuilder(userDTO.getId().toString())
+                      .append(",")
+                      .append(userDTO.getFirstName())
+                      .append(",")
+                      .append(userDTO.getLastName())
+                      .append(",")
+                      .append(userDTO.getThirdName())
+                      .append(",")
+                      .append(userDTO.getBirthDate())
+                      .append(",")
+                      .append(userDTO.getGender().getDisplayValue())
+                      .append(",")
+                      .append(userDTO.getEmail())
+                      .append(",")
+                      .append(userDTO.getPhone())
+                      .append(",").append(userDTO.getUniversity()).append("(").append(userDTO.getOrganisation()).append(")")
+                      .append(",")
+                      .append(userDTO.getEducationType().getDisplayValue())
+                      .append(",")
+                      .append(userDTO.getEducationStatus().getDisplayValue())
+                      .append(",")
+                      .append(userDTO.getGraduatedWhen())
+                      .append(",")
+                      .append(userDTO.getUserRole());
+                
+                try {
+                    fileWriter.write(row.toString());
+                    fileWriter.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            File file = new File(directory + fileName);
+            
+            // Content-Type
+            // application/pdf
+            response.setContentType(mediaType.getType());
+            
+            // Content-Disposition
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                               "attachment;filename=" + file.getName()
+                              );
+            // Content-Length
+            response.setContentLength((int) file.length());
+            
+            BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+            BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+            
+            byte[] buffer = new byte[1024];
+            int bytesRead = 0;
+            while ((bytesRead = inStream.read(buffer)) != -1) {
+                outStream.write(buffer,
+                                0,
+                                bytesRead
+                               );
+            }
+            outStream.flush();
+            inStream.close();
+        }
     }
     
     @GetMapping(value = "/{userId}/conferences/{conferenceId}/participants")
