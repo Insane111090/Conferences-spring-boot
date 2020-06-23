@@ -1,6 +1,7 @@
 package com.conferences.service.dto;
 
 import com.conferences.domain.UserConference;
+import com.conferences.model.ReportStatus;
 import com.conferences.model.UserConferenceRole;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public @Data class UserConferenceDTO {
     
     private String reviewPath;
     
-    private Integer accepted;
+    private ReportStatus reportStatus;
     
     public UserConferenceDTO(String userId, String conferenceId, UserConferenceRole userConferenceRole) {
         this.userId = Long.parseLong(userId);
@@ -31,7 +32,7 @@ public @Data class UserConferenceDTO {
         this.userConferenceRole = userConference.getUserConferenceRole();
         this.reportPath = userConference.getReportPath();
         this.reviewPath = userConference.getReviewPath();
-        this.accepted = userConference.getReportAccepted();
+        this.reportStatus = userConference.getReportStatus();
     }
     
     @Override
@@ -42,7 +43,7 @@ public @Data class UserConferenceDTO {
                ", userConferenceRole=" + userConferenceRole +
                ", reportPath=" + reportPath +
                ", reviewPath=" + reviewPath +
-               ", accepted=" + accepted +
+               ", accepted=" + reportStatus +
                '}';
     }
 }

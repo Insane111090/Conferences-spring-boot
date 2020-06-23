@@ -1,5 +1,6 @@
 package com.conferences.domain;
 
+import com.conferences.model.ReportStatus;
 import com.conferences.model.UserConferenceRole;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
@@ -38,7 +39,7 @@ public @Data class UserConference {
     private String reviewPath;
     
     @Column(name = "reportisok")
-    private Integer reportAccepted;
+    private ReportStatus reportStatus;
     
     public UserConference(User user, Conference conference, UserConferenceRole userConferenceRole){
         this.user = user;

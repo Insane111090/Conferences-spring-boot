@@ -30,26 +30,34 @@
             <td th:utext="${usersconf.get(iterState.index).userConferenceRole.getDisplayValue()}"></td>
             <td th:utext="${participant.organisation}"></td>
             <td>
-                <a th:utext="${usersconf.get(iterState.index).reportPath.substring(usersconf.get(iterState.index).reportPath.lastIndexOf('/')+1)}"
+                <a th:if="${usersconf.get(iterState.index).reportPath != null}"
+                   th:utext="${usersconf.get(iterState.index).reportPath.substring(usersconf.get(iterState.index).reportPath.lastIndexOf('/')+1)}"
                    th:href="@{/download?filePath={filePath}(filePath=${usersconf.get(iterState.index).reportPath})}"></a>
 
                 <form method="post"
                       th:action="@{/{userId}/conferences/{conferenceId}/participants/{action}
                       (userId=${participant.id},conferenceId=${conference.id},action='Approve')}"
-                      th:if="${usersconf.get(iterState.index).reportPath != null && usersconf.get(iterState.index).accepted == 0}">
+                      th:if="${usersconf.get(iterState.index).reportPath != null &&
+                      (usersconf.get(iterState.index).getReportStatus().getDisplayValue() == 'Rejected' ||
+                      usersconf.get(iterState.index).getReportStatus().getDisplayValue() == 'Under Review')}">
                     <button type="submit" class="btn btn-primary btn-sm">Approve</button>
                 </form>
                 <form method="post"
                       th:action="@{/{userId}/conferences/{conferenceId}/participants/{action}
                       (userId=${participant.id},conferenceId=${conference.id},action='Reject')}"
-                      th:if="${usersconf.get(iterState.index).reportPath != null && usersconf.get(iterState.index).accepted == 1}">
+                      th:if="${usersconf.get(iterState.index).reportPath != null &&
+                      (usersconf.get(iterState.index).getReportStatus().getDisplayValue() == 'Accepted' ||
+                      usersconf.get(iterState.index).getReportStatus().getDisplayValue() == 'Under Review')}">
                     <button type="submit" class="btn btn-warning btn-sm">Reject</button>
                 </form>
             </td>
-            <td th:utext="${usersconf.get(iterState.index).accepted == 0 ? 'Declined' : 'Accepted'}">
+            <td
+                    th:utext="${usersconf.get(iterState.index).getReportStatus() != null ?
+                    usersconf.get(iterState.index).getReportStatus().getDisplayValue() : 'No Uploaded Report'}">
             </td>
             <td th:if="${usersconf.get(iterState.index).reviewPath == null}">
                 <form method="POST" enctype="multipart/form-data"
+                      th:if="${usersconf.get(iterState.index).reportPath != null}"
                       th:action="@{/{userId}/conferences/{conferenceId}/uploadreview(userId=${participant.id},conferenceId=${conference.id})}">
                     <input type="file" name="file">
                     <input type="submit" value="Upload"> Upload

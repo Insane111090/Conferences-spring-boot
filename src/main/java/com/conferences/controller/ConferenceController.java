@@ -2,6 +2,7 @@ package com.conferences.controller;
 
 import com.conferences.domain.Conference;
 import com.conferences.domain.UserConference;
+import com.conferences.model.ReportStatus;
 import com.conferences.model.UserConferenceRole;
 import com.conferences.service.ConferenceService;
 import com.conferences.service.NoConferenceExistedForTheUserException;
@@ -145,6 +146,7 @@ public class ConferenceController {
                                                 );
         }
         else {
+            log.debug("ROLE IS: " + role);
             UserConferenceDTO userConferenceDTO = new UserConferenceDTO(userId,
                                                                         conferenceId,
                                                                         role.equals("SPEAKER") ?
@@ -327,38 +329,26 @@ public class ConferenceController {
         model.addAttribute("user",
                            user
                           );
-        try {
-            List<ConferenceDTO> myConferences = conferenceService.getUserCreatedConferences(user,
-                                                                                            1,
-                                                                                            5
-                                                                                           );
-            
-            /*long count = myConferences.size();
-            boolean hasPrev = pageNum > 1;
-            boolean hasNext = (pageNum * ROW_PER_PAGE) < count;*/
-            model.addAttribute("title",
-                               conferencesListTitle
-                              );
-            model.addAttribute("conferences",
-                               myConferences
-                              );
-            /*model.addAttribute("hasPrev",
-                               hasPrev
-                              );
-            model.addAttribute("hasNext",
-                               hasNext
-                              );*/
-            model.addAttribute("prev",
-                               pageNum - 1
-                              );
-            model.addAttribute("next",
-                               pageNum + 1
-                              );
-            
-        }
-        catch (NoConferenceExistedForTheUserException e) {
+        List<ConferenceDTO> myConferences = conferenceService.getUserCreatedConferences(user,
+                                                                                        1,
+                                                                                        5
+                                                                                       );
+        
+        model.addAttribute("title",
+                           conferencesListTitle
+                          );
+        model.addAttribute("conferences",
+                           myConferences
+                          );
+        model.addAttribute("prev",
+                           pageNum - 1
+                          );
+        model.addAttribute("next",
+                           pageNum + 1
+                          );
+        if (myConferences.size() == 0) {
             model.addAttribute("errorMessage",
-                               e.getMessage()
+                               "No Created Conferences"
                               );
         }
         
@@ -418,7 +408,7 @@ public class ConferenceController {
                                                                                                      );
             UserConferenceDTO userConferenceDTO = new UserConferenceDTO(userConference.get());
             userConferenceDTO.setReportPath(reportPath + file.getOriginalFilename());
-            userConferenceDTO.setAccepted(0);
+            userConferenceDTO.setReportStatus(ReportStatus.UNDER_REVIEW);
             userConferenceService.updateRelation(userConferenceDTO,
                                                  user,
                                                  conferenceDTO
@@ -483,7 +473,7 @@ public class ConferenceController {
                                                                                                      );
             UserConferenceDTO userConferenceDTO = new UserConferenceDTO(userConference.get());
             userConferenceDTO.setReviewPath(reviewPath + file.getOriginalFilename());
-            userConferenceDTO.setAccepted(1);
+            userConferenceDTO.setReportStatus(ReportStatus.ACCEPTED);
             userConferenceService.updateRelation(userConferenceDTO,
                                                  user,
                                                  conferenceDTO
@@ -528,7 +518,7 @@ public class ConferenceController {
                                                                                                   conferenceDTO
                                                                                                  );
         UserConferenceDTO userConferenceDTO = new UserConferenceDTO(userConference.get());
-        userConferenceDTO.setAccepted(action.equals("Approve") ? 1 : 0);
+        userConferenceDTO.setReportStatus(action.equals("Approve") ? ReportStatus.ACCEPTED : ReportStatus.REJECTED);
         userConferenceService.updateRelation(userConferenceDTO,
                                              user,
                                              conferenceDTO

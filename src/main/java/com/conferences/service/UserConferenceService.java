@@ -84,7 +84,7 @@ public class UserConferenceService {
         userConference.ifPresent(userConference1 -> {
             userConference1.setReportPath(userConferenceDTO.getReportPath());
             userConference1.setReviewPath(userConferenceDTO.getReviewPath());
-            userConference1.setReportAccepted(userConferenceDTO.getAccepted());
+            userConference1.setReportStatus(userConferenceDTO.getReportStatus());
             userConferenceRepository.save(userConference1);
         });
         return userConference.get();

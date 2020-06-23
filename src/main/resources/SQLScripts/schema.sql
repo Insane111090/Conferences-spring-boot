@@ -50,12 +50,11 @@ CREATE TABLE USERS_CONFERENCES
     ROLE               VARCHAR(20) NOT NULL,
     REPORT_FILE_PATH   VARCHAR(4000),
     REVIEW_FILE_PATH   VARCHAR(4000),
-    reportIsOK         INT
+    reportIsOK         VARCHAR(10)
 );
 
 alter table USERS_CONFERENCES
-    alter COLUMN REPORT_FILE_PATH type VARCHAR(4000),
-    alter COLUMN REVIEW_FILE_PATH type VARCHAR(4000)
+    alter COLUMN reportIsOK type VARCHAR(10)
     ;
 
 alter table USERS_CONFERENCES
@@ -75,7 +74,7 @@ FROM USERS_CONFERENCES;
 DELETE from USERS
 where user_id = 33;
 
-UPDATE users_conferences SET REVIEW_FILE_PATH = null WHERE user_conference_id = 52;
+UPDATE users_conferences SET REPORTISOK = null WHERE user_conference_id = 52;
 
 
 insert into USERS_CONFERENCES
