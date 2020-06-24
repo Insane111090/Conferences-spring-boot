@@ -31,6 +31,7 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0"
+                  th:if="${user != null && user.id != null}"
                   th:action="@{/{userId}/allconferences/search/(userId=${user.id})}"
                   method="get" id="searchFormId">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search Conference" id="searchInput">
