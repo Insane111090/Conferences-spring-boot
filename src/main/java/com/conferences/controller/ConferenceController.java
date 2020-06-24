@@ -142,7 +142,7 @@ public class ConferenceController {
         Optional<UserConference> userConference = userConferenceService.getUserConferenceRelation(user,
                                                                                                   conference
                                                                                                  );
-        /*List<UserDTO> participants = userService.getConferenceParticipants(conference);*/
+        List<UserDTO> participants = userService.getConferenceParticipants(conference);
         model.addAttribute("title",
                            conferencesInfoTitle
                           );
@@ -155,8 +155,8 @@ public class ConferenceController {
         model.addAttribute("userconf",
                            userConference.orElseGet(UserConference::new)
                           );
-        /*model.addAttribute("participants",
-                           participants);*/
+        model.addAttribute("participants",
+                           participants);
         
         return "conference-info";
     }
@@ -639,7 +639,8 @@ public class ConferenceController {
                       .append(",")
                       .append(userDTO.getGraduatedWhen())
                       .append(",")
-                      .append(userDTO.getUserRole());
+                      .append(userDTO.getUserRole())
+                      .append("\n");
                 
                 try {
                     fileWriter.write(row.toString());
