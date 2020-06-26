@@ -285,6 +285,7 @@ public class ConferenceController {
                                        @ModelAttribute("conference") ConferenceDTO conference) {
         UserDTO user = new UserDTO(userService.findById(Long.parseLong(userId)));
         conference.setId(Long.parseLong(conferenceId));
+        conference.setCreatedBy(user.getId());
         Optional<ConferenceDTO> updatedConference = conferenceService.updateConference(conference);
         model.addAttribute("conference",
                            updatedConference
